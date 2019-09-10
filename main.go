@@ -59,8 +59,8 @@ func main() {
 			if err != nil {
 				log.Fatal(err)
 			}	
-			json, _ = json.Marshal(r.String())
-			client.Publish(*mqtt_topic, 0, false, string(json))
+			data, _ = json.Marshal(r.String())
+			client.Publish(*mqtt_topic, 0, false, string(data))
 		}
 	}()
 	
