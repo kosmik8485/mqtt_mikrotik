@@ -56,7 +56,7 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
-		client.Publish(*mqtt_topic", 0, false, r)
+		client.Publish(*mqtt_topic, 0, false, r)
 	}		
 	
 	killSig := <-interrupt
