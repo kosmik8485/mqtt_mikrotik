@@ -50,14 +50,13 @@ func main() {
 
 	client := connect("pub")
 	
-	for {
+	go for {
 		time.Sleep(10 * time.Second)
 		
 		r, err := c.RunArgs(strings.Split(*command, " "))
 		if err != nil {
 			log.Fatal(err)
-		}
-		lg(r.String(),"info")
+		}	
 		client.Publish(*mqtt_topic, 0, false, r.String())
 	}
 	
