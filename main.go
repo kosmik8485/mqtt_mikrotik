@@ -18,14 +18,14 @@ import (
 var (
 	command  = flag.String("command", "/interface/wireless/registration-table/print", "ROS command")
 	address  = flag.String("address", "192.168.88.1:8728", "ROS address")
-	username = flag.String("username", "admin", "ROS Username")
-	password = flag.String("password", "JashOtEag6", "ROS password")
+	username = flag.String("username", os.Getenv("ros_username"), "ROS Username")
+	password = flag.String("password", os.Getenv("ros_password"), "ROS password")
 	async	 = flag.Bool("async", false, "Use async code")
 	useTLS   = flag.Bool("tls", false, "Use TLS")
 	logLevel = flag.Int("loglevel",1,"log level (0 - disable, 1 - info, 2 - debug, 3 - error only)")
 	
-	mqtt_user  = flag.String("mqtt_user", "pi", "MQTT username")
-	mqtt_pass  = flag.String("mqtt_pass", "raspberry", "MQTT password")
+	mqtt_user  = flag.String("mqtt_user", os.Getenv("mqtt_user"), "MQTT username")
+	mqtt_pass  = flag.String("mqtt_pass", os.Getenv("mqtt_pass"), "MQTT password")
 	mqtt_topic = flag.String("mqtt_topic", "router/home", "MQTT topic")
 	mqtt_addr  = flag.String("mqtt_addr", "srv.rpi:1883", "MQTT address")
 )
