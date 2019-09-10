@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"os/signal"
 	"syscall"
+	"encoding/json"
 	
 	"gopkg.in/routeros.v2"
 	mqtt "github.com/eclipse/paho.mqtt.golang"
@@ -58,7 +59,8 @@ func main() {
 			if err != nil {
 				log.Fatal(err)
 			}	
-			client.Publish(*mqtt_topic, 0, false, r.String())
+			json, _ = json.Marshal(r.String())
+			client.Publish(*mqtt_topic, 0, false, string(json))
 		}
 	}()
 	
