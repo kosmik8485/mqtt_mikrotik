@@ -50,7 +50,7 @@ func main() {
 
 	client := connect("pub")
 	
-	go func() {
+	for {
 		time.Sleep(10 * time.Second)
 		
 		r, err := c.RunArgs(strings.Split(*command, " "))
@@ -59,7 +59,7 @@ func main() {
 		}
 		lg(r.String(),"info")
 		client.Publish(*mqtt_topic, 0, false, r.String())
-	}()	
+	}
 	
 	killSig := <-interrupt
 	switch killSig {
