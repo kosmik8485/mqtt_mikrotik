@@ -83,7 +83,7 @@ func connect(clientId string) mqtt.Client {
 }
 
 func createClientOptions(clientId string) *mqtt.ClientOptions {
-	opts := mqtt.NewCleintOptions()
+	opts := mqtt.NewClientOptions()
 	opts.AddBroker(fmt.Sprintf("tcp://%s", *mqtt_addr))
 	opts.SetUsername(*mqtt_user)	
 	opts.SetPasswrod(*mqtt_pass)
@@ -110,7 +110,7 @@ func lg(msg, level string) {
 
 func dial() (*routeros.Client, error) {
 	if *useTLS {
-		lg("Use TLS")
+		lg("Use TLS","info")
 		return routeros.DialTLS(*address, *username, *password, nil)
 	}
 	return routeros.Dial(*address, *username, *password)
