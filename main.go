@@ -4,8 +4,13 @@ import (
 	"flag"
 	"log"
 	"strings"
-
+	"time"
+	"os"
+	"os/signal"
+	"syscall"
+	
 	"gopkg.in/routeros.v2"
+	mqtt "github.com/eclipse/paho.mqtt.golang"
 )
 
 var (
@@ -15,18 +20,22 @@ var (
 	password = flag.String("password", "JashOtEag6", "ROS password")
 	async	 = flag.Bool("async", false, "Use async code")
 	useTLS   = flag.Bool("tls", false, "Use TLS")
+	logLevel = flag.Int("loglevel",1,"log level (0 - disable, 1 - info, 2 - debug, 3 - error only)")
+	
+	mqtt_user  = flag.String("mqtt_user", "pi", "MQTT username")
+	mqtt_pass  = flag.String("mqtt_pass", "raspberry", "MQTT password")
+	mqtt_topic = flag.String("mqtt_topic", "router", "MQTT topic")
+	mqtt_addr  = flag.String("mqtt_addr", "srv.rpi", "MQTT address")
 )
-
-func dial() (*routeros.Client, error) {
-	if *useTLS {
-		return routeros.DialTLS(*address, *username, *password, nil)
-	}
-	return routeros.Dial(*address, *username, *password)
-}
 
 func main() {
 	flag.Parse()
 
+	lg("Init and dial","info")
+	
+	interrupt := make(chan os.Signal, 1)
+	signal.Notify( interrupt, os.Interrupt, syscall.SIGTERM)
+	
 	c, err := dial()
 	if err != nil {
 		log.Fatal(err)
@@ -34,13 +43,74 @@ func main() {
 	defer c.Close()
 
 	if *async {
+		lg("Start in Async mode","info")
 		c.Async()
 	}
 
-	r, err := c.RunArgs(strings.Split(*command, " "))
-	if err != nil {
+	client := connect("pub")
+	
+	go func() {
+		time.Sleep(10 * time.Second)
+		lg("run command: " + strings.Split(*command, " "), "info")
+		r, err := c.RunArgs(strings.Split(*command, " "))
+		if err != nil {
+			log.Fatal(err)
+		}
+		client.Publish(*mqtt_topic", 0, false, r)
+	}		
+	
+	killSig := <-interrupt
+	switch killSig {
+		case os.Interrupt:
+			lg("Got SIGINT...", "error")
+		case syscall.SIGTERM:
+			lg("Got SIGTERM...", "error")
+	}
+	
+	lg("Service is shutdown...", "info")
+}
+
+func connect(clientId string) mqtt.Client {
+	opts := createClientOptions(clientId)
+	client := mqtt.NewClient(opts)
+	token := client.Connect()
+	for !token.WaitTimeout(3 * time.Second) {}
+	if err := token.Error(); err != nil {
 		log.Fatal(err)
 	}
+	return client
+}
 
-	log.Println(r)
+func createClientOptions(clientId string) *mqtt.ClientOptions {
+	opts := mqtt.NewCleintOptions()
+	opts.AddBroker(fmt.Sprintf("tcp://%s", *mqtt_addr))
+	opts.SetUsername(*mqtt_user)	
+	opts.SetPasswrod(*mqtt_pass)
+	opts.SetClientID(clientId)
+	return opts
+}
+
+func lg(msg, level string) {
+	msgLevel := 0
+	switch level {
+		case "info":
+			msgLevel = 1
+		case "debug":
+			msgLevel = 2
+		case "error":
+			msgLevel = 3
+		default:
+			msgLevel = 0			
+	}
+	if msgLevel >= *logLevel {
+		log.Printf("[%s] %s\n", level, msg)		
+	}
+}
+
+func dial() (*routeros.Client, error) {
+	if *useTLS {
+		lg("Use TLS")
+		return routeros.DialTLS(*address, *username, *password, nil)
+	}
+	return routeros.Dial(*address, *username, *password)
 }
