@@ -6,6 +6,7 @@ import (
 	"strings"
 	"time"
 	"os"
+	"fmt"
 	"os/signal"
 	"syscall"
 	
@@ -51,13 +52,13 @@ func main() {
 	
 	go func() {
 		time.Sleep(10 * time.Second)
-		lg("run command: " + strings.Split(*command, " "), "info")
+		
 		r, err := c.RunArgs(strings.Split(*command, " "))
 		if err != nil {
 			log.Fatal(err)
 		}
 		client.Publish(*mqtt_topic, 0, false, r)
-	}		
+	}()	
 	
 	killSig := <-interrupt
 	switch killSig {
