@@ -25,8 +25,8 @@ var (
 	
 	mqtt_user  = flag.String("mqtt_user", "pi", "MQTT username")
 	mqtt_pass  = flag.String("mqtt_pass", "raspberry", "MQTT password")
-	mqtt_topic = flag.String("mqtt_topic", "router", "MQTT topic")
-	mqtt_addr  = flag.String("mqtt_addr", "srv.rpi", "MQTT address")
+	mqtt_topic = flag.String("mqtt_topic", "router/home", "MQTT topic")
+	mqtt_addr  = flag.String("mqtt_addr", "srv.rpi:1883", "MQTT address")
 )
 
 func main() {
@@ -57,6 +57,7 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
+		lg(r,"info")
 		client.Publish(*mqtt_topic, 0, false, r)
 	}()	
 	
