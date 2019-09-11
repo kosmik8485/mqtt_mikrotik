@@ -74,6 +74,11 @@ exit;
 
 sub getWiFiUsers {
   my $list = $ros->cmd("/interface/wireless/registration-table/print");
+  if ( my $err = $ros->error ){
+    print Dumper( $ros );
+    print Dumper( $err );
+    $cv->send;
+  }
   print Dumper( $list );
   return $list;
 }
