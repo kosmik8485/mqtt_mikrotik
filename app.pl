@@ -26,8 +26,8 @@ GetOptions(
 my %Conf = (
   router => {
     host        => '192.168.88.1',
-    user        => \$options{ros_user},
-    pass        => \$options{'ros_pass'},
+    user        => $options{ros_user},
+    pass        => $options{'ros_pass'},
     tls         => 0,
     autoconnect => 1,
   },
