@@ -26,8 +26,9 @@ GetOptions(
 my %Conf = (
   router => {
     host        => '192.168.88.1',
+    port	=> 8728,
     user        => $options{router_user},
-    pass        => $options{router_pass},
+    password    => $options{router_pass},
     tls         => 0,
     autoconnect => 1,
   },
@@ -81,6 +82,6 @@ sub getWiFiUsers {
     print Dumper( \%options );
     $cv->send;
   }
-  
+  print Dumper($list); 
   return $list;
 }
