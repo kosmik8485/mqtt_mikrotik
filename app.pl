@@ -4,27 +4,42 @@ use warnings;
 
 use AnyEvent;
 use AnyEvent::MQTT;
-use Mikrotik::API;
+use API::MikroTik;
+use GetOpt::Long;
 use JSON;
+
+my %options = (
+  router_user => $ENV{'ros_username'},
+  router_pass => $ENV{'ros_password'},
+  mqtt_user   => $ENV{'mqtt_user'},
+  mqtt_pass   => $ENV{'mqtt_pass'},
+);
+
+GetOptions(
+  'ros_user'  => \$options{router_user},
+  'ros_pass'  => \$options{router_pass},
+  'mqtt_user' => \$options{mqtt_user},
+  'mqtt_pass' => \$options{mqtt_pass},
+) or die($!);
 
 my %Conf = (
   router => {
     host     => '192.168.88.1',
-    username => $ENV{'ros_username'},
-    password => $ENV{'ros_password'},
+    user => $options{ros_user},
+    pass => $options{'ros_pass'},
     use_ssl  => 0,
     autoconnect => 1,
   },
   mqtt   => {
     host => 'srv.rpi',
     port => 1883,
-    user_name => $ENV{'mqtt_user'},
-    password => $ENV{'mqtt_pass'},
+    user_name => $options{mqtt_user},
+    password => $options{mqtt_pass},
   },
 );
 
 my $mqtt = AnyEvent::MQTT->new( $Conf->{mqtt} );
-my $ros = Mikrotik::API->new( $Conf->{router} );
+my $ros = API::MikroTik->new( $Conf->{router} );
 
 my $cv =AnyEvent->condvar;
 my $stop = 0;
@@ -56,6 +71,6 @@ $cv->recv;
 exit;
 
 sub getWiFiUsers {
-  my ( $ret_print, @users ) = $ros->query("/interface/wireless/registration-table/print");
-  return \@users;
+  my $list = $ros->cmd("/interface/wireless/registration-table/print");
+  return $list;
 }
