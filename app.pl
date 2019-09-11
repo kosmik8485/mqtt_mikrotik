@@ -5,7 +5,7 @@ use warnings;
 use AnyEvent;
 use AnyEvent::MQTT;
 use API::MikroTik;
-use GetOpt::Long;
+use Getopt::Long;
 use JSON;
 
 my %options = (
