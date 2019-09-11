@@ -61,7 +61,7 @@ my $work_timer = AnyEvent->timer(
   interval => 10,
   cb => sub {
     my $data = JSON->new->utf8->encode( getWiFiUsers() );
-    print Dumper( { JSON => $data } );
+  
     $mqtt->publish(
       topic => "router/home",
       message => $data,
@@ -81,6 +81,6 @@ sub getWiFiUsers {
     print Dumper( \%options );
     $cv->send;
   }
-  print Dumper( $list );
+  
   return $list;
 }
