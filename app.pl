@@ -25,10 +25,10 @@ GetOptions(
 
 my %Conf = (
   router => {
-    host     => '192.168.88.1',
-    user => $options{ros_user},
-    pass => $options{'ros_pass'},
-    use_ssl  => 0,
+    host        => '192.168.88.1',
+    user        => $options{ros_user},
+    pass        => $options{'ros_pass'},
+    tls         => 0,
     autoconnect => 1,
   },
   mqtt   => {
@@ -76,6 +76,7 @@ sub getWiFiUsers {
   my $list = $ros->cmd("/interface/wireless/registration-table/print");
   if ( my $err = $ros->error ){
     print Dumper( $ros );
+    print Dumper( $Conf{router} );
     print Dumper( $err );
     $cv->send;
   }
