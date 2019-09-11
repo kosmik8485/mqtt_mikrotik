@@ -60,7 +60,7 @@ func main() {
 				log.Fatal(err)
 			}	
 			data, _ := json.Marshal(r.String())
-			client.Publish(*mqtt_topic, 0, false, string(data))
+			client.Publish(*mqtt_topic, 0, false, data)
 		}
 	}()
 	
