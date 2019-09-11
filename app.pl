@@ -17,10 +17,10 @@ my %options = (
 );
 
 GetOptions(
-  'ros_user'  => \$options{router_user},
-  'ros_pass'  => \$options{router_pass},
-  'mqtt_user' => \$options{mqtt_user},
-  'mqtt_pass' => \$options{mqtt_pass},
+  'ros_user=s'  => \$options{router_user},
+  'ros_pass=s'  => \$options{router_pass},
+  'mqtt_user=s' => \$options{mqtt_user},
+  'mqtt_pass=s' => \$options{mqtt_pass},
 ) or die($!);
 
 my %Conf = (
