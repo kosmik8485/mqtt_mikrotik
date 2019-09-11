@@ -38,8 +38,8 @@ my %Conf = (
   },
 );
 
-my $mqtt = AnyEvent::MQTT->new( $Conf->{mqtt} );
-my $ros = API::MikroTik->new( $Conf->{router} );
+my $mqtt = AnyEvent::MQTT->new( $Conf{mqtt} );
+my $ros = API::MikroTik->new( $Conf{router} );
 
 my $cv =AnyEvent->condvar;
 my $stop = 0;
