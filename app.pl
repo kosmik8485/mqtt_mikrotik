@@ -78,6 +78,7 @@ sub getWiFiUsers {
     print Dumper( $ros );
     print Dumper( $Conf{router} );
     print Dumper( $err );
+    print Dumper( \%options );
     $cv->send;
   }
   print Dumper( $list );
