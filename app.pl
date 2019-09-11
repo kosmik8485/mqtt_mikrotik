@@ -59,7 +59,7 @@ my $work_timer = AnyEvent->timer(
   adter => 1,
   interval => 10,
   cb => sub {
-    my $data = JSON->new->utf8->encode( getWiFiUsers );
+    my $data = JSON->new->utf8->encode( getWiFiUsers() );
     $mqtt->publish(
       topic => "router/home",
       message => $data,
