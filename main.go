@@ -58,7 +58,7 @@ func main() {
                         if err != nil { 
                                 log.Fatal(err)
                         }
-			time.Sleep(time.ParseDuration(delay)
+			time.Sleep(delay)
 
 			r, err := c.RunArgs(strings.Split(*command, " "))
 			if err != nil {
