@@ -59,9 +59,9 @@ my $check_timer = AnyEvent->timer(
 
 my $work_timer = AnyEvent->timer(
   adter => 1,
-  interval => 10,
+  interval => 5,
   cb => sub {
-    my $data = JSON->new->utf8->convert_blessed->encode( [ getWiFiUsers() ]);
+    my $data = JSON->new->utf8->convert_blessed->encode( @{[ getWiFiUsers() ]} );
     print Dumper($data); 
     $mqtt->publish(
       topic => "router/home",
