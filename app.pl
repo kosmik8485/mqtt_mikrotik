@@ -6,7 +6,6 @@ use AnyEvent;
 use AnyEvent::MQTT;
 use API::MikroTik;
 use Getopt::Long;
-use Data::Dumper;
 use JSON;
 
 my %options = (
@@ -61,8 +60,7 @@ my $work_timer = AnyEvent->timer(
   adter => 1,
   interval => 5,
   cb => sub {
-    my $data = JSON->new->utf8->convert_blessed->encode( @{[ getWiFiUsers() ]} );
-    print Dumper($data); 
+    my $data = JSON->new->utf8->convert_blessed->encode( @{[ getWiFiUsers() ]} );    
     $mqtt->publish(
       topic => "router/home",
       message => $data,
@@ -75,13 +73,9 @@ exit;
 
 sub getWiFiUsers {
   my $list = $ros->cmd("/interface/wireless/registration-table/print");
-  if ( my $err = $ros->error ){
-    print Dumper( $ros );
-    print Dumper( $Conf{router} );
-    print Dumper( $err );
-    print Dumper( \%options );
+  if ( my $err = $ros->error ){    
+    print "[ERROR] $err";    
     $cv->send;
   }
-#  print Dumper($list); 
   return $list;
 }
