@@ -54,7 +54,11 @@ func main() {
 	
 	go func() {
 		for {
-			time.Sleep(time.ParseDuration(*mqtt_upd))
+                        delay, err := time.ParseDuration(*mqtt_upd)
+                        if err != nil { 
+                                log.Fatal(err)
+                        }
+			time.Sleep(time.ParseDuration(delay)
 
 			r, err := c.RunArgs(strings.Split(*command, " "))
 			if err != nil {
