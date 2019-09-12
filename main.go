@@ -54,7 +54,7 @@ func main() {
 	
 	go func() {
 		for {
-			time.Sleep(mqtt_upd * time.Second)
+			time.Sleep(*mqtt_upd * time.Second)
 
 			r, err := c.RunArgs(strings.Split(*command, " "))
 			if err != nil {
