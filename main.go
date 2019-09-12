@@ -28,6 +28,7 @@ var (
 	mqtt_pass  = flag.String("mqtt_pass", os.Getenv("mqtt_pass"), "MQTT password")
 	mqtt_topic = flag.String("mqtt_topic", "router/home", "MQTT topic")
 	mqtt_addr  = flag.String("mqtt_addr", "srv.rpi:1883", "MQTT address")
+	mqtt_upd   = flag.Int("mqtt_upd", 10, "MQTT update timeout in secs")
 )
 
 func main() {
@@ -53,15 +54,13 @@ func main() {
 	
 	go func() {
 		for {
-			time.Sleep(10 * time.Second)
+			time.Sleep(*mqtt_upd * time.Second)
 
 			r, err := c.RunArgs(strings.Split(*command, " "))
 			if err != nil {
 				log.Fatal(err)
-			}	
-			log.Println(r)
-			data, _ := json.Marshal(r)
-			log.Println(data)
+			}				
+			data, _ := json.Marshal(r)			
 			client.Publish(*mqtt_topic, 0, false, data)
 		}
 	}()
@@ -110,7 +109,7 @@ func lg(msg, level string) {
 			msgLevel = 0			
 	}
 	if msgLevel >= *logLevel {
-		log.Printf("[%s] %s\n", level, msg)		
+		log.Printf("[%s] %s\n", uc(level), msg)		
 	}
 }
 
