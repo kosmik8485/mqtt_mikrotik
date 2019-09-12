@@ -28,7 +28,7 @@ var (
 	mqtt_pass  = flag.String("mqtt_pass", os.Getenv("mqtt_pass"), "MQTT password")
 	mqtt_topic = flag.String("mqtt_topic", "router/home", "MQTT topic")
 	mqtt_addr  = flag.String("mqtt_addr", "srv.rpi:1883", "MQTT address")
-	mqtt_upd   = flag.Int("mqtt_upd", 10, "MQTT update timeout in secs")
+	mqtt_upd   = flag.String("mqtt_upd", "10s", "MQTT update timeout in secs")
 )
 
 func main() {
@@ -54,8 +54,7 @@ func main() {
 	
 	go func() {
 		for {
-                        tmp := *mqtt_upd
-			time.Sleep(tmp * time.Second)
+			time.Sleep(time.ParseDuration(*mqtt_upd))
 
 			r, err := c.RunArgs(strings.Split(*command, " "))
 			if err != nil {
