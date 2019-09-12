@@ -54,7 +54,7 @@ func main() {
 	
 	go func() {
 		for {
-			time.Sleep(*mqtt_upd * time.Second)
+			time.Sleep(mqtt_upd * time.Second)
 
 			r, err := c.RunArgs(strings.Split(*command, " "))
 			if err != nil {
@@ -109,7 +109,7 @@ func lg(msg, level string) {
 			msgLevel = 0			
 	}
 	if msgLevel >= *logLevel {
-		log.Printf("[%s] %s\n", uc(level), msg)		
+		log.Printf("[%s] %s\n", strings.ToUpper(level), msg)		
 	}
 }
 
